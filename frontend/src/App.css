@@ -1,0 +1,183 @@
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem 2rem;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.app-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header & Card Layouts */
+.header-card {
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.debug-logs {
+  background: #1f2937;
+  color: #10b981;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  text-align: left;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 1rem;
+  white-space: pre-wrap;
+  border: 1px solid #374151;
+}
+
+/* Kanban Board Layout */
+.kanban-board {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 10px 0;
+  width: 100%;
+}
+
+/* Column Styling */
+.kanban-column {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  flex: 1;
+  /* Grow to fill space */
+  min-width: 0;
+  /* Allow shrinking below content size if needed */
+  min-height: 500px;
+  border-radius: 8px;
+  border: 1px solid var(--bg-tertiary);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: background-color 0.2s;
+}
+
+.kanban-column h3 {
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--bg-tertiary);
+  padding-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Column Header Colors */
+.kanban-column[data-id="APPLIED"] h3 {
+  border-color: var(--status-applied);
+  color: var(--status-applied);
+}
+
+.kanban-column[data-id="INTERVIEWING"] h3 {
+  border-color: var(--status-interviewing);
+  color: var(--status-interviewing);
+}
+
+.kanban-column[data-id="REJECTED"] h3 {
+  border-color: var(--status-rejected);
+  color: var(--status-rejected);
+}
+
+.kanban-column[data-id="OFFER"] h3 {
+  border-color: var(--status-offer);
+  color: var(--status-offer);
+}
+
+/* Card Styling */
+.kanban-card {
+  background: var(--bg-primary);
+  /* White cards */
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--bg-tertiary);
+  cursor: grab;
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.kanban-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-primary);
+}
+
+.kanban-card.dragging {
+  opacity: 0.8;
+  cursor: grabbing;
+  box-shadow: var(--shadow-lg);
+}
+
+.kanban-card strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.kanban-card .job-title {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Action Buttons on Card */
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  padding: 4px;
+  box-shadow: none;
+}
+
+.edit-btn {
+  position: absolute;
+  top: 8px;
+  right: 30px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  padding: 4px;
+  box-shadow: none;
+}
+
+.kanban-card:hover .delete-btn,
+.kanban-card:hover .edit-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  color: var(--status-rejected);
+  background: #fee2e2;
+}
+
+.edit-btn:hover {
+  color: var(--accent-primary);
+  background: #eff6ff;
+}
+
+/* Utility to hide scrollbar but verify functionality might be tricky, so keeping default for now */

@@ -1,0 +1,10 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="logoGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#3b82f6" />
+            <stop offset="100%" stop-color="#2563eb" />
+        </linearGradient>
+    </defs>
+    <rect width="24" height="24" rx="6" fill="url(#logoGradient)" />
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M19 5V19H5V15H9V11H13V7H19V5Z" fill="white" />
+</svg>
