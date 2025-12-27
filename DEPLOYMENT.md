@@ -38,8 +38,8 @@ We have included a `render.yaml` file that defines the entire infrastructure.
 ### Backend
 1. Create a **Web Service**.
 2. **Runtime**: Python 3.
-3. **Build Command**: `cd backend && pip install -r requirements.txt`
-4. **Start Command**: `cd backend && gunicorn -c gunicorn_conf.py main:app`
+3. **Build Command**: `pip install -r requirements.txt`
+4. **Start Command**: `gunicorn -c backend/gunicorn_conf.py backend.main:app`
 5. **Environment Variables**:
     - `DATABASE_URL`: (Paste connection string)
     - `GEMINI_API_KEY`: ...
