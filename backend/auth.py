@@ -11,7 +11,14 @@ load_dotenv()
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/auth/callback")
+# Default to Render URL if on Render, else localhost
+RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
+if RENDER_EXTERNAL_URL:
+    DEFAULT_REDIRECT_URI = f"{RENDER_EXTERNAL_URL}/auth/callback"
+else:
+    DEFAULT_REDIRECT_URI = "http://localhost:8000/auth/callback"
+
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", DEFAULT_REDIRECT_URI)
 
 # Scopes: OpenID, Email, Profile, AND Gmail Readonly
 GOOGLE_SCOPES = "openid email profile https://www.googleapis.com/auth/gmail.readonly"
