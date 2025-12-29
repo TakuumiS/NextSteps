@@ -87,7 +87,8 @@ function App() {
   };
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:8000/auth/login";
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+    window.location.href = `${API_URL}/auth/login`;
   };
 
   const handleScan = async () => {

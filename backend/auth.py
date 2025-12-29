@@ -90,7 +90,8 @@ async def login_callback(code: str, db: Session = Depends(get_db)):
     db.refresh(db_user)
 
     # Returning access token in URL so frontend can send it back for scanning
-    return RedirectResponse(url=f"http://localhost:5173?token={access_token}&email={email}")
+    FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    return RedirectResponse(url=f"{FRONTEND_URL}?token={access_token}&email={email}")
 
 @router.get("/verify")
 async def verify_token_endpoint(token: str = Header(...)):

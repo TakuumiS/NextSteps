@@ -19,15 +19,18 @@ We have included a `render.yaml` file that defines the entire infrastructure.
     - `GOOGLE_CLIENT_ID`: From Google Cloud Console.
     - `GOOGLE_CLIENT_SECRET`: From Google Cloud Console.
     - `GOOGLE_REDIRECT_URI`: Set to `https://<YOUR-BACKEND-URL>/auth/callback`.
-        - *Note*: You won't know the backend URL until after the first deploy fails or you create a placeholder service.
-        - **Workaround**: Deploy once. It will fail. Get the URL of the backend service. Update `GOOGLE_REDIRECT_URI` in the Render Dashboard Env Vars. Update your Google Cloud Console Authorized Redirect URIs to match. Redeploy.
     - `GEMINI_API_KEY`: From Google AI Studio.
+    - `FRONTEND_URL`: `https://<YOUR-FRONTEND-URL>.onrender.com` (Set this after frontend is deployed or create a placeholder).
+    - `VITE_API_URL` (for Frontend service): `https://<YOUR-BACKEND-URL>.onrender.com` (Set this after backend is deployed).
 
 6. Click **Apply**.
 7. Render will create:
     - A PostgreSQL database.
     - A Python backend service.
     - A Node.js frontend service.
+
+> [!IMPORTANT]
+> Since the Backend and Frontend depend on each other's URLs, you might need to deploy, get the URLs, update the Environment Variables in the Render Dashboard, and then redeploy.
 
 ## Manual Configuration (If not using Blueprint)
 
@@ -45,7 +48,8 @@ We have included a `render.yaml` file that defines the entire infrastructure.
     - `GEMINI_API_KEY`: ...
     - `GOOGLE_CLIENT_ID`: ...
     - `GOOGLE_CLIENT_SECRET`: ...
-    - `GOOGLE_REDIRECT_URI`: `https://<YOUR-APP-NAME>.onrender.com/auth/callback`
+    - `GOOGLE_REDIRECT_URI`: `https://<YOUR-BACKEND-URL>.onrender.com/auth/callback`
+    - `FRONTEND_URL`: `https://<YOUR-FRONTEND-URL>.onrender.com` (For CORS)
 
 ### Frontend
 1. Create a **Static Site** (for pure static) or **Web Service** (if using `vite preview`).
@@ -53,10 +57,10 @@ We have included a `render.yaml` file that defines the entire infrastructure.
 2. **Runtime**: Node.
 3. **Build Command**: `cd frontend && npm install && npm run build`
 4. **Start Command**: `cd frontend && npm run preview -- --host 0.0.0.0 --port $PORT`
-5. **Rewrites/Redirects**:
-    - If using Static Site: Rewrite `/*` to `/index.html`.
+5. **Environment Variables**:
+    - `VITE_API_URL`: `https://<YOUR-BACKEND-URL>.onrender.com`
 
 ## Important Notes
 
-- **CORS**: You may need to update `backend/main.py` to allow the specific frontend domain once deployed. Currently it allows `http://localhost:5173`.
+- **CORS**: The backend is configured to allow requests from `localhost:5173` and the URL specified in the `FRONTEND_URL` environment variable.
 - **Google OAuth**: You MUST add the deployed domain to your "Authorized Javascript Origins" and "Authorized Redirect URIs" in the Google Cloud Console.

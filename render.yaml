@@ -24,6 +24,8 @@ services:
         sync: false
       - key: GEMINI_API_KEY
         sync: false
+      - key: FRONTEND_URL
+        sync: false
 
   # FRONTEND
   - type: web
@@ -39,6 +41,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 20.9.0
+      - key: VITE_API_URL
+        sync: false
 
 databases:
   - name: nextsteps-db

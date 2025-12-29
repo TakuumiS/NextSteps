@@ -8,9 +8,25 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="NextSteps API")
 
+import os
+
+origins = [
+    "http://localhost:5173",  # Local development
+]
+
+# Add production frontend URL if set
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    origins.append(frontend_url)
+
+# Add specific allowed origins from env
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS")
+if allowed_origins_env:
+    origins.extend(allowed_origins_env.split(","))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"], # Frontend URL
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
