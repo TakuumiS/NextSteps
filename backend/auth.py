@@ -9,16 +9,7 @@ from .models import User
 
 load_dotenv()
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-# Default to Render URL if on Render, else localhost
-RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
-if RENDER_EXTERNAL_URL:
-    DEFAULT_REDIRECT_URI = f"{RENDER_EXTERNAL_URL}/auth/callback"
-else:
-    DEFAULT_REDIRECT_URI = "http://localhost:8000/auth/callback"
-
-GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", DEFAULT_REDIRECT_URI)
+# Removed global GOOGLE_REDIRECT_URI definition to force dynamic lookup
 
 # Scopes: OpenID, Email, Profile, AND Gmail Readonly
 GOOGLE_SCOPES = "openid email profile https://www.googleapis.com/auth/gmail.readonly"
@@ -27,9 +18,16 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.get("/login")
 async def login():
+    # Determine Redirect URI dynamically
+    RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
+    if RENDER_EXTERNAL_URL:
+        redirect_uri = f"{RENDER_EXTERNAL_URL}/auth/callback"
+    else:
+        redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/auth/callback")
+
     params = {
         "client_id": GOOGLE_CLIENT_ID,
-        "redirect_uri": GOOGLE_REDIRECT_URI,
+        "redirect_uri": redirect_uri,
         "response_type": "code",
         "scope": GOOGLE_SCOPES,
         "access_type": "offline", # To get refresh token
@@ -43,12 +41,19 @@ async def login():
 async def login_callback(code: str, db: Session = Depends(get_db)):
     # Exchange code for token
     token_url = "https://oauth2.googleapis.com/token"
+    # Determine Redirect URI dynamically (MUST MATCH login)
+    RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
+    if RENDER_EXTERNAL_URL:
+        redirect_uri = f"{RENDER_EXTERNAL_URL}/auth/callback"
+    else:
+        redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/auth/callback")
+
     data = {
         "client_id": GOOGLE_CLIENT_ID,
         "client_secret": GOOGLE_CLIENT_SECRET,
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": GOOGLE_REDIRECT_URI,
+        "redirect_uri": redirect_uri,
     }
     
     async with httpx.AsyncClient() as client:
