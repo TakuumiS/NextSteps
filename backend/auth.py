@@ -14,6 +14,9 @@ load_dotenv()
 # Scopes: OpenID, Email, Profile, AND Gmail Readonly
 GOOGLE_SCOPES = "openid email profile https://www.googleapis.com/auth/gmail.readonly"
 
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.get("/login")
