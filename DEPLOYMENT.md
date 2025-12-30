@@ -56,7 +56,7 @@ We have included a `render.yaml` file that defines the entire infrastructure.
     - *Recommended for simplicity here*: **Web Service** (Node) serves the build artifacts easily.
 2. **Runtime**: Node.
 3. **Build Command**: `cd frontend && npm install && npm run build`
-4. **Start Command**: `cd frontend && npm run preview -- --host 0.0.0.0 --port $PORT`
+4. **Start Command**: `cd frontend && npx serve -s dist -l $PORT`
 5. **Environment Variables**:
     - `VITE_API_URL`: `https://<YOUR-BACKEND-URL>.onrender.com`
 
