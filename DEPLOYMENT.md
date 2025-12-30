@@ -60,6 +60,15 @@ We have included a `render.yaml` file that defines the entire infrastructure.
 5. **Environment Variables**:
     - `VITE_API_URL`: `https://<YOUR-BACKEND-URL>.onrender.com`
 
+### 6. Critical for Static Sites (Fixing 404s)
+If you are using a **Static Site** service, you must configure a Rewrite Rule for the app to work correctly on refresh:
+1. Go to the **Redirects/Rewrites** tab.
+2. Click **Add Rule**.
+3. **Source**: `/*`
+4. **Destination**: `/index.html`
+5. **Action**: `Rewrite`
+6. Click **Save Changes**.
+
 ## Important Notes
 
 - **CORS**: The backend is configured to allow requests from `localhost:5173` and the URL specified in the `FRONTEND_URL` environment variable.
