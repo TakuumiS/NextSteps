@@ -9,6 +9,14 @@ NextSteps is a full-stack application for tracking job applications using a Kanb
 - **AI Powered**: Uses Google Gemini to extract company names and statuses from emails.
 - **Analytics**: Visualization of application progress.
 
+## Screenshots
+
+![Kanban Board](screenshots/board.png)
+*Manage your job applications with a drag-and-drop Kanban board.*
+
+![Analytics Dashboard](screenshots/analytics.png)
+*Track your progress with detailed analytics.*
+
 ## Project Structure
 
 For a detailed explanation of every file in the codebase, see [FILE_STRUCTURE.md](FILE_STRUCTURE.md).
@@ -28,7 +36,25 @@ git clone <repository-url>
 cd NextSteps
 ```
 
-### 2. Backend Setup
+### 2. Environment Configuration
+
+Create a `.env` file in the root directory by copying the example:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and fill in the following values:
+
+- `DATABASE_URL`: Your PostgreSQL connection string.
+- `GOOGLE_CLIENT_ID`: OAuth Client ID from Google Cloud Console.
+- `GOOGLE_CLIENT_SECRET`: OAuth Client Secret from Google Cloud Console.
+- `GOOGLE_REDIRECT_URI`: `http://localhost:8000/auth/callback` (for local).
+- `GEMINI_API_KEY`: API Key from Google AI Studio.
+- `FRONTEND_URL`: `http://localhost:5173` (for local).
+- `RENDER_EXTERNAL_URL`: (Optional, for production) URL of your deployed backend.
+
+### 3. Backend Setup
 
 ```bash
 cd backend
@@ -37,13 +63,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Create a `.env` file in the root directory (based on `.env.example`):
-```bash
-cp ../.env.example ../.env
-```
-Update `../.env` with your PostgreSQL credentials and API keys.
-
-### 3. Frontend Setup
+### 4. Frontend Setup
 
 ```bash
 cd ../frontend
@@ -59,6 +79,10 @@ You can use the provided helper script to start both servers:
 chmod +x start.sh
 ./start.sh
 ```
+
+## Deployment
+
+For detailed deployment instructions on Render.com, please refer to [DEPLOYMENT.md](DEPLOYMENT.md).
 
 Or run them manually:
 
