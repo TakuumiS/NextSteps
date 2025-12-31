@@ -119,3 +119,31 @@ async def verify_token_endpoint(token: str = Header(...)):
     except Exception as e:
         print(f"Token verification failed: {e}")
         raise HTTPException(status_code=401, detail="Invalid token")
+
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+security = HTTPBearer()
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
+    token = credentials.credentials
+    from .gmail_service import get_gmail_service
+    
+    try:
+        # 1. Verify token with Google (and get email)
+        service = get_gmail_service(token)
+        profile = service.users().getProfile(userId='me').execute()
+        email = profile.get("emailAddress")
+    except Exception as e:
+        print(f"Auth failed: {e}")
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+
+    # 2. Get User from DB
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        # Auto-create user if they exist in Google but not DB (edge case validity?)
+        # For now, let's assume they should exist if they logged in.
+        # But wait, if they login via frontend, they hit /callback, which creates the user.
+        # So they should exist.
+        raise HTTPException(status_code=401, detail="User not found")
+        
+    return user

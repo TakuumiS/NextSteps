@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
 from ..database import get_db
-from ..models import JobApplication, JobStatus
+from ..models import JobApplication, JobStatus, User
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -26,20 +27,18 @@ class JobUpdate(BaseModel):
     date_applied: Optional[datetime] = None
 
 @router.get("/")
-def get_jobs(db: Session = Depends(get_db)):
-    # In a real app, filter by current user. 
-    # For now, return all (prototype mode) or filter by a dummy user ID if we had auth middleware.
-    return db.query(JobApplication).order_by(JobApplication.date_applied.desc()).all()
+def get_jobs(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return db.query(JobApplication).filter(JobApplication.user_id == current_user.id).order_by(JobApplication.date_applied.desc()).all()
 
 @router.post("/")
-def create_job(job: JobCreate, db: Session = Depends(get_db)):
-    # Prototype: Default user_id=1
-    user_id = 1 
+def create_job(job: JobCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    user_id = current_user.id
 
     # Check for duplicates
     existing_job = db.query(JobApplication).filter(
         JobApplication.company_name == job.company_name,
-        JobApplication.job_title == job.job_title
+        JobApplication.job_title == job.job_title,
+        JobApplication.user_id == user_id
     ).first()
 
     if existing_job:
@@ -60,8 +59,8 @@ def create_job(job: JobCreate, db: Session = Depends(get_db)):
     return new_job
 
 @router.put("/{job_id}")
-def update_job_status(job_id: int, update: JobUpdate, db: Session = Depends(get_db)):
-    job = db.query(JobApplication).filter(JobApplication.id == job_id).first()
+def update_job_status(job_id: int, update: JobUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    job = db.query(JobApplication).filter(JobApplication.id == job_id, JobApplication.user_id == current_user.id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
@@ -83,8 +82,8 @@ def update_job_status(job_id: int, update: JobUpdate, db: Session = Depends(get_
     return job
 
 @router.delete("/{job_id}")
-def delete_job(job_id: int, db: Session = Depends(get_db)):
-    job = db.query(JobApplication).filter(JobApplication.id == job_id).first()
+def delete_job(job_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    job = db.query(JobApplication).filter(JobApplication.id == job_id, JobApplication.user_id == current_user.id).first()
     if not job:
          raise HTTPException(status_code=404, detail="Job not found")
     db.delete(job)
